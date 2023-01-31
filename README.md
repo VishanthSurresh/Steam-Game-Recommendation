@@ -7,7 +7,7 @@ We found the following Dataset are useful and interesting to work on.
 
 1. Steam Video Game Dataset -> https://www.kaggle.com/datasets/tamber/steam-video-games
 
-####Dataset Description:
+###Dataset Description:
 Number of Attributes  -> 5
 Number of Records     -> 200k
 Number of Files       -> 1
@@ -16,7 +16,7 @@ Dataset Size          -> 9.0 MB
 
 2. Book Recommendation Dataset -> https://www.kaggle.com/datasets/arashnic/book-recommendation-dataset?select=Users.csv
 
-####Dataset Description
+###Dataset Description
 
 Number of Attributes  -> 14
 Number of Records     -> 270K
