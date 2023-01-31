@@ -5,7 +5,7 @@ We found the following Dataset are useful and interesting to work on.
 
 ### Finalized Dataset 
 
-1. Steam Video Game Dataset -> https://www.kaggle.com/datasets/tamber/steam-video-games
+### 1. Steam Video Game Dataset -> https://www.kaggle.com/datasets/tamber/steam-video-games
 
 ### Dataset Description:
 <br>Number of Attributes  -> 5</br>
@@ -14,7 +14,7 @@ We found the following Dataset are useful and interesting to work on.
 <br>Type                  -> Recommendation System</br>
 <br>Dataset Size          -> 9.0 MB</br>
 
-2. Book Recommendation Dataset -> https://www.kaggle.com/datasets/arashnic/book-recommendation-dataset?select=Users.csv
+### 2. Book Recommendation Dataset -> https://www.kaggle.com/datasets/arashnic/book-recommendation-dataset?select=Users.csv
 
 ### Dataset Description:
 <br>Number of Attributes  -> 14</br>
