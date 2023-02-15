@@ -8,7 +8,7 @@
 
 ### PROJECT SUMMARY
 <p align="justify"> 
-Gaming Industry is one of the fastest-growing industries in the world, with millions of gamers around the world spending countless hours playing their favorite games. With such a vast collection of games available, it can be challenging for gamers to find new games that align with their preferences.The Goal of this project is to develop a Game Recommendation System that provides personalized recommendations to video gamers to purchase a new game on Steam Website. 
+Gaming Industry is one of the fastest-growing industries in the world, with millions of gamers around the world spending countless hours playing their favorite games. With such a vast collection of games available, it can be challenging for gamers to find new games that align with their preferences. The Goal of this project is to develop a Game Recommendation System that provides personalized recommendations to video gamers to purchase a new game on Steam Website. 
 </p>
 
 <p align="justify"> 
