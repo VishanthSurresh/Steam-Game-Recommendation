@@ -155,28 +155,37 @@ ax = sns.boxplot(x=panda_df['Hours_played'])
 
 """# FEATURE ADDITION"""
 
-new_feature =dataframes.filter("Hours_played >= 1")
-new_feature.select("Behaviour_Name").distinct().collect()
-new_feature.select('Steam_Game').distinct().count()
-average = new_feature.groupBy("Steam_Game") \
-             .agg(mean("Hours_played").alias("mean_Hourplayed")) \
+from pyspark.sql.window import Window
+from pyspark.sql.functions import col, when, lag, sum
+window_spec = Window.orderBy('USER_ID')
+data_with_prev_value = dataframes.withColumn('prev_value', lag(col('Behaviour_Name')).over(window_spec))
+combined_data = data_with_prev_value.withColumn('new_feature', when((col('prev_value') == 'purchase') & (col('Behaviour_Name') == 'play'), 2).otherwise(1))
+grouped1 = combined_data.filter(((col('prev_value') == 'purchase') & (col('Behaviour_Name') == 'play')) | \
+                                        ((col('prev_value') == 'purchase') & (col('Behaviour_Name') == 'purchase')) |\
+                                        ((col('prev_value') == 'null') & (col('Behaviour_Name') == 'purchase')) |\
+                                        ((col('prev_value') == 'play') & (col('Behaviour_Name') == 'purchase')));
+grouped1.show(10)
+grouped1.count()
+
+average = grouped1.groupBy("Steam_Game") \
+            .agg(mean("Hours_played").alias("mean_Hourplayed")) \
              .select("Steam_Game", "mean_Hourplayed")
-newfeature = new_feature.join(average, on="Steam_Game", how="inner")
+grouped = grouped1.join(average, on="Steam_Game", how="inner")
+grouped.show(10)
+
+from pyspark.sql.functions import when
+newfeature = grouped.withColumn("rating", 
+                  when(grouped["Hours_played"] == 1.0 * grouped["mean_Hourplayed"] * grouped["new_feature"], 1)
+                  .when(grouped["Hours_played"] >= 0.9 * grouped["mean_Hourplayed"] * grouped["new_feature"], 5)
+                   .when((grouped["Hours_played"] >= 0.7 * grouped["mean_Hourplayed"] * grouped["new_feature"]) & (grouped["Hours_played"] < 0.9 * grouped["mean_Hourplayed"]*grouped["new_feature"]), 4)
+                   .when((grouped["Hours_played"] >= 0.4 * grouped["mean_Hourplayed"] * grouped["new_feature"]) & (grouped["Hours_played"] < 0.7 * grouped["mean_Hourplayed"]*grouped["new_feature"]), 3)
+                   .when((grouped["Hours_played"] >= 0.1 * grouped["mean_Hourplayed"] * grouped["new_feature"]) & (grouped["Hours_played"] < 0.4 * grouped["mean_Hourplayed"]*grouped["new_feature"]), 2)
+                   .otherwise(0))
 newfeature.show(10)
 
 # datapoints with less than 1 hour played games. We wont consider 16792 datapoints 
 new_feature1 =dataframes.filter("Hours_played < 1")
 new_feature1.count()
-
-from pyspark.sql.functions import when
-newfeature = newfeature.withColumn("rating", 
-                  when(newfeature["Hours_played"] == 1.0, 1)
-                  .when(newfeature["Hours_played"] >= 0.9 * newfeature["mean_Hourplayed"], 5)
-                   .when((newfeature["Hours_played"] >= 0.7 * newfeature["mean_Hourplayed"]) & (newfeature["Hours_played"] < 0.9 * newfeature["mean_Hourplayed"]), 4)
-                   .when((newfeature["Hours_played"] >= 0.4 * newfeature["mean_Hourplayed"]) & (newfeature["Hours_played"] < 0.7 * newfeature["mean_Hourplayed"]), 3)
-                   .when((newfeature["Hours_played"] >= 0.1 * newfeature["mean_Hourplayed"]) & (newfeature["Hours_played"] < 0.4 * newfeature["mean_Hourplayed"]), 2)
-                   .otherwise(2))
-newfeature.show()
 
 newfeature.groupBy("rating").count().show()
 
@@ -275,3 +284,4 @@ d[3881]
 int_df = int_df.sort_values(['rating'], ascending=[False])
 int_df['Game_Name'] = int_df['GAME_ID'].map(d)
 int_df
+
